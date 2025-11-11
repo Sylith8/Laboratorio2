@@ -1,0 +1,97 @@
+﻿@model PetCare.Models.Mascota
+@{
+    Layout = "_Layout";
+}
+@{
+    ViewData["Title"] = "Registrar Mascota";
+}
+
+<h2>Registrar Mascota</h2>
+<hr />
+
+<form action="/Mascota/Guardar" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label>Nombre de la Mascota</label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Especie</label>
+        <select asp-for="Especie" class="form-control">
+            <option value="">Seleccione una especie</option>
+            <option>Perro</option>
+            <option>Gato</option>
+            <option>Ave</option>
+            <option>Otro</option>
+        </select>
+        <span asp-validation-for="Especie" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Raza</label>
+        <input asp-for="Raza" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Edad</label>
+        <input asp-for="Edad" type="number" class="form-control" />
+        <span asp-validation-for="Edad" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Nombre del Dueño</label>
+        <input asp-for="NombreDueno" class="form-control" />
+        <span asp-validation-for="NombreDueno" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Teléfono</label>
+        <input asp-for="Telefono" id="telefono" class="form-control" placeholder="809-555-1234" maxlength="12" autocomplete="off" />
+        <span asp-validation-for="Telefono" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Fecha de Ingreso</label>
+        <input asp-for="FechaIngreso" type="date" class="form-control" />
+        <span asp-validation-for="FechaIngreso" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Ver Mascotas</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const telInput = document.getElementById("telefono");
+            if (!telInput) return;
+
+            // Evita letras y símbolos
+            telInput.addEventListener("keypress", function (e) {
+                if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Aplica formato automáticamente ###-###-####
+            telInput.addEventListener("input", function (e) {
+                let value = e.target.value.replace(/\D/g, ""); // solo dígitos
+
+                if (value.length > 3 && value.length <= 6) {
+                    value = value.slice(0, 3) + "-" + value.slice(3);
+                } else if (value.length > 6) {
+                    value = value.slice(0, 3) + "-" + value.slice(3, 6) + "-" + value.slice(6, 10);
+                }
+
+                e.target.value = value;
+            });
+        });
+    </script>
+}
